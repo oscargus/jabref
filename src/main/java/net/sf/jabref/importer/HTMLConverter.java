@@ -755,6 +755,10 @@ public class HTMLConverter implements LayoutFormatter {
             {"844", "doubletilde"}, // Almost equal to above - requires extraipa
             {"845", "spreadlips"}, // Left right arrow below - requires extraipa
             {"846", "whistle"}, // Upwards arrow below - requires extraipa
+    };
+
+    // List of combining accents
+    private final String[][] doubleAccentList = new String[][] {
             {"861", "textdoublebreve"}, // Double breve
             {"862", "textdoublemacron"}, // Double macron
             {"863", "textdoublemacronbelow"}, // Double macron below
@@ -765,6 +769,7 @@ public class HTMLConverter implements LayoutFormatter {
 
     private final HashMap<String, String> escapedSymbols = new HashMap<String, String>();
     private final HashMap<Integer, String> escapedAccents = new HashMap<Integer, String>();
+    private final HashMap<Integer, String> doubleEscapedAccents = new HashMap<Integer, String>();
     private final HashMap<Integer, String> numSymbols = new HashMap<Integer, String>();
     private final HashMap<Character, String> unicodeSymbols = new HashMap<Character, String>();
 
@@ -789,6 +794,9 @@ public class HTMLConverter implements LayoutFormatter {
         for (String[] anAccentList : accentList) {
             escapedAccents.put(Integer.decode(anAccentList[0]), anAccentList[1]);
         }
+        for (String[] anAccentList : doubleAccentList) {
+            doubleEscapedAccents.put(Integer.decode(anAccentList[0]), anAccentList[1]);
+        }
     }
 
     public String formatUnicode(String text) {
@@ -801,6 +809,11 @@ public class HTMLConverter implements LayoutFormatter {
             text = text.replaceAll(character.toString(), unicodeSymbols.get(character));
         }
 
+        // Escaped accents
+        
+        // Escaped double accents
+        
+        // Check for unconverted characters
         Integer cp;
         for (int i = 0; i <= text.length() - 1; i++) {
             cp = text.codePointAt(i);
@@ -876,6 +889,17 @@ public class HTMLConverter implements LayoutFormatter {
                 } else {
                     text = text.replaceAll(m.group(1) + "&#" + m.group(2) + m.group(3) + m.group(4) + ";", "\\{\\\\" + escapedAccents.get(num) + "\\{" + m.group(1) + "\\}\\}");
                 }
+            }
+        }
+
+        escapedPattern = Pattern.compile("(.)&#([x]*)([0]*)(\\p{XDigit}+);(.)");
+        m = escapedPattern.matcher(text);
+        while (m.find()) {
+            //      System.err.println("Found pattern: " + m.group(1));
+            //      System.err.println("Found pattern: " + m.group(2));
+            int num = Integer.decode(m.group(2).replace("x", "#") + m.group(4));
+            if (doubleEscapedAccents.containsKey(num)) {
+                    text = text.replaceAll(m.group(1) + "&#" + m.group(2) + m.group(3) + m.group(4) + ";" + m.group(5), "\\{\\\\" + doubleEscapedAccents.get(num) + "\\{" + m.group(1) + m.group(5) + "\\}\\}");
             }
         }
 
