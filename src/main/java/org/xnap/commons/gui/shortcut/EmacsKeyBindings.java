@@ -472,7 +472,9 @@ public class EmacsKeyBindings
                 SetMarkCommandAction.reset();
             }
             text = jtc.getSelectedText();
-            if (text != null) {
+            if (text == null) {
+                jtc.getToolkit().beep();
+            } else {
                 if (copy) {
                     jtc.copy();
                     // clear the selection
@@ -484,15 +486,13 @@ public class EmacsKeyBindings
                     jtc.setCaretPosition(newCaretPos);
                 }
                 KillRing.getInstance().add(text);
-            } else {
-                jtc.getToolkit().beep();
             }
         }
     }
 
 
     /**
-     * This actin kills text up to the end of the current line and stores it in
+     * This action kills text up to the end of the current line and stores it in
      * the killring.
      */
     @SuppressWarnings("serial")
@@ -631,12 +631,11 @@ public class EmacsKeyBindings
                 jtc.setSelectionStart(YankAction.start);
                 jtc.setSelectionEnd(YankAction.end);
                 String toYank = KillRing.getInstance().next();
-                if (toYank != null) {
+                if (toYank == null) {
+                    jtc.getToolkit().beep();
+                } else {
                     jtc.replaceSelection(toYank);
                     YankAction.end = jtc.getCaretPosition();
-                }
-                else {
-                    jtc.getToolkit().beep();
                 }
             }
         }
@@ -653,7 +652,7 @@ public class EmacsKeyBindings
 
         private JTextComponent jtc;
         private final LinkedList<String> ring = new LinkedList<>();
-        Iterator<String> iter = ring.iterator();
+        private Iterator<String> iter = ring.iterator();
 
         private static final KillRing instance = new KillRing();
 
@@ -663,12 +662,12 @@ public class EmacsKeyBindings
             return KillRing.instance;
         }
 
-        void setCurrentTextComponent(JTextComponent jtc)
+        private void setCurrentTextComponent(JTextComponent jtc)
         {
             this.jtc = jtc;
         }
 
-        JTextComponent getCurrentTextComponent()
+        private JTextComponent getCurrentTextComponent()
         {
             return jtc;
         }
@@ -679,7 +678,7 @@ public class EmacsKeyBindings
          * Deviating from the Emacs implementation we make sure the
          * exact same text is not somewhere else in the ring.
          */
-        void add(String text)
+        private void add(String text)
         {
             if (text.isEmpty()) {
                 return;
@@ -714,7 +713,7 @@ public class EmacsKeyBindings
          * Returns the next text element which is to be yank-popped.
          * @return <code>null</code> if the ring is empty
          */
-        String next()
+        private String next()
         {
             if (ring.isEmpty()) {
                 return null;
@@ -745,7 +744,7 @@ public class EmacsKeyBindings
         /**
          * At first the same code as in {@link
          * EmacsKeyBindings.DowncaseWordAction} is performed, to ensure the
-         * word is in lower case, then the first letter is capialized.
+         * word is in lower case, then the first letter is capitalized.
          */
         @Override
         public void actionPerformed(ActionEvent event)
@@ -788,10 +787,43 @@ public class EmacsKeyBindings
     }
 
     /**
+     * This action renders all characters of the next word to upppercase.
+     */
+    @SuppressWarnings("serial")
+    abstract public static class CommoncaseWordAction extends TextAction {
+
+        public CommoncaseWordAction(String nm)
+        {
+            super(nm);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent event) {
+            JTextComponent jtc = getTextComponent(event);
+
+            if (jtc != null) {
+                try {
+                    int start = jtc.getCaretPosition();
+                    int end = EmacsKeyBindings.getWordEnd(jtc, start);
+                    jtc.setSelectionStart(start);
+                    jtc.setSelectionEnd(end);
+                    String word = jtc.getText(start, end - start);
+                    jtc.replaceSelection(changeCase(word));
+                    jtc.setCaretPosition(end);
+                } catch (BadLocationException ble) {
+                    jtc.getToolkit().beep();
+                }
+            }
+        }
+
+        abstract protected String changeCase(String word);
+    }
+
+    /**
      * This action renders all characters of the next word to lowercase.
      */
     @SuppressWarnings("serial")
-    public static class DowncaseWordAction extends TextAction
+    public static class DowncaseWordAction extends CommoncaseWordAction
     {
 
         public DowncaseWordAction(String nm)
@@ -800,31 +832,17 @@ public class EmacsKeyBindings
         }
 
         @Override
-        public void actionPerformed(ActionEvent event)
-        {
-            JTextComponent jtc = getTextComponent(event);
-
-            if (jtc != null) {
-                try {
-                    int start = jtc.getCaretPosition();
-                    int end = EmacsKeyBindings.getWordEnd(jtc, start);
-                    jtc.setSelectionStart(start);
-                    jtc.setSelectionEnd(end);
-                    String word = jtc.getText(start, end - start);
-                    jtc.replaceSelection(word.toLowerCase());
-                    jtc.setCaretPosition(end);
-                } catch (BadLocationException ble) {
-                    jtc.getToolkit().beep();
-                }
-            }
+        protected String changeCase(String word) {
+            return word.toLowerCase();
         }
+
     }
 
     /**
-     * This action renders all characters of the next word to upppercase.
+     * This action renders all characters of the next word to uppercase.
      */
     @SuppressWarnings("serial")
-    public static class UpcaseWordAction extends TextAction
+    public static class UpcaseWordAction extends CommoncaseWordAction
     {
 
         public UpcaseWordAction(String nm)
@@ -833,24 +851,10 @@ public class EmacsKeyBindings
         }
 
         @Override
-        public void actionPerformed(ActionEvent event)
-        {
-            JTextComponent jtc = getTextComponent(event);
-
-            if (jtc != null) {
-                try {
-                    int start = jtc.getCaretPosition();
-                    int end = EmacsKeyBindings.getWordEnd(jtc, start);
-                    jtc.setSelectionStart(start);
-                    jtc.setSelectionEnd(end);
-                    String word = jtc.getText(start, end - start);
-                    jtc.replaceSelection(word.toUpperCase());
-                    jtc.setCaretPosition(end);
-                } catch (BadLocationException ble) {
-                    jtc.getToolkit().beep();
-                }
-            }
+        protected String changeCase(String word) {
+            return word.toUpperCase();
         }
+
     }
 
 
