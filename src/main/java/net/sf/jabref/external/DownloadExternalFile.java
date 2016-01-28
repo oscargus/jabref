@@ -224,7 +224,7 @@ public class DownloadExternalFile {
 
                 callback.downloadComplete(entry);
             } catch (IOException ex) {
-                ex.printStackTrace();
+                LOGGER.warn("Problem downloading file", ex);
             }
 
             tmp.delete();
