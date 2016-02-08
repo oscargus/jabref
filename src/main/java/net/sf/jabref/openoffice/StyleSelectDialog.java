@@ -181,6 +181,7 @@ class StyleSelectDialog {
                 displayDefaultStyle(false);
             }
         });
+
         // Add action listener to "Edit" menu item, which is supposed to open the style file in an external editor:
         edit.addActionListener(new ActionListener() {
 
