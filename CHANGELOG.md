@@ -27,8 +27,8 @@ to [sourceforge feature requests](https://sourceforge.net/p/jabref/features/) by
 - [#684](https://github.com/JabRef/jabref/issues/684): ISBNtoBibTex Error Message is now more clear
 - Moved default bibliography mode to general preferences tab
 - Added Ordinal formatter (1 -> 1st etc)
-
 - [#492](https://github.com/JabRef/jabref/issues/492): If no text is marked, the whole field is copied. Preview of pasted text in tool tip
+- Special copy commands are moved to 'Copy special' submenu in right-click menu
 
 ### Fixed
 - Fixed [#621](https://github.com/JabRef/jabref/issues/621) and [#669](https://github.com/JabRef/jabref/issues/669): Encoding and preamble now end with newline.
