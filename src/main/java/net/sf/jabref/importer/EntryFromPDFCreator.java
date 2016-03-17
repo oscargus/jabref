@@ -1,23 +1,15 @@
 package net.sf.jabref.importer;
 
 import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.List;
 import java.util.Optional;
 
 import net.sf.jabref.gui.IconTheme;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDDocumentInformation;
-
 import net.sf.jabref.model.entry.BibEntry;
 import net.sf.jabref.pdfimport.PdfImporter;
 import net.sf.jabref.pdfimport.PdfImporter.ImportPdfFilesResult;
 import net.sf.jabref.JabRef;
 import net.sf.jabref.external.ExternalFileType;
 import net.sf.jabref.external.ExternalFileTypes;
-import net.sf.jabref.logic.xmp.XMPUtil;
 
 /**
  * Uses XMPUtils to get one BibEntry for a PDF-File.
@@ -65,66 +57,6 @@ public class EntryFromPDFCreator extends EntryFromFileCreator {
         ImportPdfFilesResult res = pi.importPdfFiles(fileNames, JabRef.jrf);
         assert res.getEntries().size() == 1;
         return Optional.of(res.getEntries().get(0));
-
-        /*addEntryDataFromPDDocumentInformation(pdfFile, entry);
-        addEntryDataFromXMP(pdfFile, entry);
-        
-        if (entry.getField("title") == null) {
-        	entry.setField("title", pdfFile.getName());
-        }
-        
-        return entry;*/
-    }
-
-    /** Adds entry data read from the PDDocument information of the file.
-     * @param pdfFile
-     * @param entry
-     */
-    private void addEntryDataFromPDDocumentInformation(File pdfFile, BibEntry entry) {
-        try (PDDocument document = PDDocument.load(pdfFile.getAbsoluteFile())) {
-            PDDocumentInformation pdfDocInfo = document
-                    .getDocumentInformation();
-
-            if (pdfDocInfo != null) {
-                Optional<BibEntry> entryDI = XMPUtil
-                        .getBibtexEntryFromDocumentInformation(document
-                        .getDocumentInformation());
-                if (entryDI.isPresent()) {
-                    addEntryDataToEntry(entry, entryDI.get());
-                    Calendar creationDate = pdfDocInfo.getCreationDate();
-                    if (creationDate != null) {
-                        // default time stamp follows ISO-8601. Reason: https://xkcd.com/1179/
-                        String date = new SimpleDateFormat("yyyy-MM-dd")
-                                .format(creationDate.getTime());
-                        appendToField(entry, "timestamp", date);
-                    }
-
-                    if (pdfDocInfo.getCustomMetadataValue("bibtex/bibtexkey") != null) {
-                        entry.setId(pdfDocInfo
-                                .getCustomMetadataValue("bibtex/bibtexkey"));
-                    }
-                }
-            }
-        } catch (IOException e) {
-            // no canceling here, just no data added.
-        }
-    }
-
-    /**
-     * Adds all data Found in all the entrys of this XMP file to the given
-     * entry. This was implemented without having much knowledge of the XMP
-     * format.
-     *
-     * @param aFile
-     * @param entry
-     */
-    private void addEntryDataFromXMP(File aFile, BibEntry entry) {
-        try {
-            List<BibEntry> entrys = XMPUtil.readXMP(aFile.getAbsoluteFile());
-            addEntrysToEntry(entry, entrys);
-        } catch (IOException e) {
-            // no canceling here, just no data added.
-        }
     }
 
     @Override
