@@ -21,10 +21,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import net.sf.jabref.logic.TypedBibEntry;
 import net.sf.jabref.model.database.BibDatabase;
 import net.sf.jabref.model.database.BibDatabaseMode;
 import net.sf.jabref.model.entry.BibEntry;
-import net.sf.jabref.model.entry.TypedBibEntry;
 
 public class DatabaseStatistics {
 
