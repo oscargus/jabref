@@ -111,6 +111,7 @@ import net.sf.jabref.gui.menus.FileHistoryMenu;
 import net.sf.jabref.gui.menus.RightClickMenu;
 import net.sf.jabref.gui.openoffice.OpenOfficePanel;
 import net.sf.jabref.gui.preftabs.PreferencesDialog;
+import net.sf.jabref.gui.sidepane.SidePaneManager;
 import net.sf.jabref.gui.util.FocusRequester;
 import net.sf.jabref.gui.util.PositionWindow;
 import net.sf.jabref.gui.worker.MarkEntriesAction;

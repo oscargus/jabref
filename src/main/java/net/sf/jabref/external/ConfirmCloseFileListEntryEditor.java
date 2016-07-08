@@ -15,7 +15,7 @@
 */
 package net.sf.jabref.external;
 
-import net.sf.jabref.gui.FileListEntry;
+import net.sf.jabref.gui.filelist.FileListEntry;
 
 /**
  * An implementation of this interface is called to confirm whether a FileListEntryEditor

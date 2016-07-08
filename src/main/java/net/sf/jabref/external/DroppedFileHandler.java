@@ -32,9 +32,9 @@ import javax.swing.event.ChangeListener;
 
 import net.sf.jabref.Globals;
 import net.sf.jabref.gui.BasePanel;
-import net.sf.jabref.gui.FileListEntry;
-import net.sf.jabref.gui.FileListTableModel;
 import net.sf.jabref.gui.JabRefFrame;
+import net.sf.jabref.gui.filelist.FileListEntry;
+import net.sf.jabref.gui.filelist.FileListTableModel;
 import net.sf.jabref.gui.maintable.MainTable;
 import net.sf.jabref.gui.undo.NamedCompound;
 import net.sf.jabref.gui.undo.UndoableFieldChange;

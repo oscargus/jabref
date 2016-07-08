@@ -13,7 +13,7 @@
     with this program; if not, write to the Free Software Foundation, Inc.,
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
-package net.sf.jabref.gui;
+package net.sf.jabref.gui.sidepane;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,6 +29,8 @@ import javax.swing.SwingUtilities;
 
 import net.sf.jabref.Globals;
 import net.sf.jabref.JabRefPreferences;
+import net.sf.jabref.gui.BasePanel;
+import net.sf.jabref.gui.JabRefFrame;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

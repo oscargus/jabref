@@ -2,10 +2,10 @@ package net.sf.jabref.external;
 
 import net.sf.jabref.Globals;
 import net.sf.jabref.gui.BasePanel;
-import net.sf.jabref.gui.FileListEntry;
-import net.sf.jabref.gui.FileListEntryEditor;
-import net.sf.jabref.gui.FileListTableModel;
 import net.sf.jabref.gui.actions.BaseAction;
+import net.sf.jabref.gui.filelist.FileListEntry;
+import net.sf.jabref.gui.filelist.FileListEntryEditor;
+import net.sf.jabref.gui.filelist.FileListTableModel;
 import net.sf.jabref.gui.undo.UndoableFieldChange;
 import net.sf.jabref.logic.l10n.Localization;
 import net.sf.jabref.model.entry.BibEntry;
